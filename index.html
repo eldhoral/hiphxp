@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HIPHXP - The Underground is Alive</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1E1B4B',
+                        background: '#09090b',
+                        foreground: '#fafafa',
+                        accent: '#22C55E',
+                        muted: '#27272a',
+                        border: '#3f3f46',
+                    },
+                    fontFamily: {
+                        heading: ['"Bebas Neue"', 'sans-serif'],
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    borderRadius: {
+                        'none': '0',
+                        'sm': '0.125rem',
+                        DEFAULT: '0.25rem',
+                        'md': '0.25rem',
+                        'lg': '0.25rem',
+                        'xl': '0.25rem',
+                        '2xl': '0.25rem',
+                        '3xl': '0.25rem',
+                        'full': '9999px',
+                    },
+                    letterSpacing: {
+                        tightest: '-.075em',
+                        tighter: '-.05em',
+                        tight: '-.025em',
+                        normal: '0',
+                        wide: '.025em',
+                        wider: '.05em',
+                        widest: '.1em',
+                        awesomewide: '.25em',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Grain/Noise Overlay */
+        .noise-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 50;
+            opacity: 0.04;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+        
+        /* Typography specifics */
+        .text-outline {
+            color: transparent;
+            -webkit-text-stroke: 1px #fafafa;
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #09090b;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #3f3f46;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #22C55E;
+        }
+
+        /* Marquee */
+        .marquee-container {
+            width: 100%;
+            overflow: hidden;
+            white-space: nowrap;
+            background: #22C55E;
+            color: #09090b;
+            padding: 0.75rem 0;
+            border-top: 2px solid #09090b;
+            border-bottom: 2px solid #09090b;
+            transform: rotate(-1deg) scale(1.02);
+            position: relative;
+            z-index: 20;
+        }
+        .marquee-content {
+            display: inline-block;
+            animation: marquee 20s linear infinite;
+        }
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* Initial GSAP states to prevent flash of unstyled content */
+        .gsap-hero-el { opacity: 0; transform: translateY(40px); }
+        .gsap-grid-item { opacity: 0; transform: translateY(40px); }
+        .gsap-stat-item { opacity: 0; transform: scale(0.9); }
+    </style>
+</head>
+<body class="bg-background text-foreground font-sans antialiased selection:bg-accent selection:text-background min-h-screen flex flex-col relative overflow-x-hidden">
+
+    <!-- Noise Texture Overlay -->
+    <div class="noise-bg"></div>
+
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-40 w-full border-b border-border/40 bg-background/80 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <div class="flex-shrink-0 flex items-center">
+                    <a href="index.html" class="font-heading text-4xl tracking-wide hover:text-accent transition-colors duration-200">
+                        HIPHXP<span class="text-accent">.</span>ID
+                    </a>
+                </div>
+                
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#featured" class="text-sm font-medium tracking-wide uppercase hover:text-accent transition-colors">Featured</a>
+                    <a href="#community" class="text-sm font-medium tracking-wide uppercase hover:text-accent transition-colors">Community</a>
+                    <a href="submit.html" class="inline-flex items-center justify-center px-6 py-2 border-2 border-accent text-accent font-heading tracking-wider text-lg hover:bg-accent hover:text-background transition-all duration-200 uppercase">
+                        Submit Track
+                    </a>
+                </div>
+                
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-foreground hover:text-accent focus:outline-none">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div id="mobile-menu" class="hidden md:hidden border-t border-border bg-background">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="#featured" class="block px-3 py-2 text-base font-medium uppercase hover:text-accent">Featured</a>
+                <a href="#community" class="block px-3 py-2 text-base font-medium uppercase hover:text-accent">Community</a>
+                <a href="submit.html" class="block w-full text-center mt-4 px-6 py-3 bg-accent text-background font-heading text-xl uppercase">
+                    Submit Track
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-grow">
+        <!-- Hero Section -->
+        <section class="relative pt-24 pb-32 md:pt-40 md:pb-48 overflow-hidden">
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-accent/5 rounded-full blur-[100px] pointer-events-none"></div>
+            
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                <div class="text-center md:text-left">
+                    <h2 class="gsap-hero-el text-accent font-mono text-sm md:text-base tracking-widest uppercase mb-4 font-bold inline-block border border-accent/30 px-3 py-1 bg-accent/10">Indonesia Hip-Hop Registry</h2>
+                    <h1 class="font-heading text-7xl sm:text-8xl md:text-[140px] lg:text-[180px] leading-[0.8] tracking-tighter uppercase mb-8">
+                        <span class="block overflow-hidden"><span class="block gsap-hero-el">The Streets</span></span>
+                        <span class="block overflow-hidden"><span class="block text-outline opacity-80 gsap-hero-el">Are Listening</span></span>
+                    </h1>
+                    <p class="gsap-hero-el mt-4 text-lg md:text-xl text-zinc-400 max-w-2xl font-light mb-10 leading-relaxed md:ml-2">
+                        The ultimate grassroots platform for Indonesian hip-hop artists. Drop your tracks, submit your press kit, and get heard by the community. Raw, unedited, authentic.
+                    </p>
+                    <div class="gsap-hero-el flex flex-col sm:flex-row gap-4 md:ml-2">
+                        <a href="submit.html" class="group relative inline-flex items-center justify-center px-8 py-4 bg-accent text-background font-heading text-2xl uppercase tracking-wider overflow-hidden">
+                            <span class="absolute w-0 h-0 transition-all duration-300 ease-out bg-white rounded-full group-hover:w-64 group-hover:h-56 opacity-10"></span>
+                            <span class="relative">Submit Your Music</span>
+                            <svg class="ml-2 w-5 h-5 relative group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                            </svg>
+                        </a>
+                        <a href="#featured" class="inline-flex items-center justify-center px-8 py-4 border-2 border-border text-foreground font-heading text-2xl uppercase tracking-wider hover:border-accent hover:text-accent transition-colors duration-200">
+                            Explore Catalog
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Marquee Ticker -->
+        <div class="marquee-container font-heading text-3xl uppercase tracking-widest">
+            <div class="marquee-content">
+                INDONESIA HIP-HOP REGISTRY <span class="mx-4 text-zinc-800">///</span> 
+                THE UNDERGROUND IS ALIVE <span class="mx-4 text-zinc-800">///</span> 
+                SUBMIT YOUR MUSIC <span class="mx-4 text-zinc-800">///</span> 
+                SUPPORT LOCAL ARTISTS <span class="mx-4 text-zinc-800">///</span> 
+                INDONESIA HIP-HOP REGISTRY <span class="mx-4 text-zinc-800">///</span> 
+                THE UNDERGROUND IS ALIVE <span class="mx-4 text-zinc-800">///</span> 
+                SUBMIT YOUR MUSIC <span class="mx-4 text-zinc-800">///</span> 
+                SUPPORT LOCAL ARTISTS <span class="mx-4 text-zinc-800">///</span> 
+            </div>
+            <!-- Duplicated for seamless loop -->
+            <div class="marquee-content" aria-hidden="true">
+                INDONESIA HIP-HOP REGISTRY <span class="mx-4 text-zinc-800">///</span> 
+                THE UNDERGROUND IS ALIVE <span class="mx-4 text-zinc-800">///</span> 
+                SUBMIT YOUR MUSIC <span class="mx-4 text-zinc-800">///</span> 
+                SUPPORT LOCAL ARTISTS <span class="mx-4 text-zinc-800">///</span> 
+                INDONESIA HIP-HOP REGISTRY <span class="mx-4 text-zinc-800">///</span> 
+                THE UNDERGROUND IS ALIVE <span class="mx-4 text-zinc-800">///</span> 
+                SUBMIT YOUR MUSIC <span class="mx-4 text-zinc-800">///</span> 
+                SUPPORT LOCAL ARTISTS <span class="mx-4 text-zinc-800">///</span> 
+            </div>
+        </div>
+
+        <!-- Featured Section -->
+        <section id="featured" class="py-24 bg-zinc-900/30 border-y border-border/30 mt-8">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-end justify-between mb-12">
+                    <div>
+                        <h2 class="font-heading text-5xl md:text-7xl uppercase tracking-tight">Fresh <span class="text-accent">Drops</span></h2>
+                        <p class="text-zinc-400 mt-2 font-mono text-sm uppercase tracking-wider">Latest submissions from the community</p>
+                    </div>
+                    <a href="#" class="hidden md:flex items-center text-accent hover:text-white transition-colors font-mono text-sm uppercase tracking-wider">
+                        View All
+                        <svg class="ml-1 w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                        </svg>
+                    </a>
+                </div>
+
+                <!-- Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- Item 1 -->
+                    <div class="gsap-grid-item group relative bg-muted/30 border border-border/50 hover:border-accent transition-colors duration-300 p-4">
+                        <div class="aspect-square bg-zinc-800 mb-4 relative overflow-hidden group-hover:opacity-90 transition-opacity">
+                            <div class="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                                <button class="w-12 h-12 rounded-none bg-accent flex items-center justify-center text-background hover:scale-105 transition-transform">
+                                    <svg class="w-5 h-5 ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                </button>
+                            </div>
+                            <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=500&q=80" alt="Album art" class="object-cover w-full h-full grayscale group-hover:grayscale-0 transition-all duration-500 transform group-hover:scale-105">
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="text-accent font-mono text-xs mb-1">Jakarta Selatan</span>
+                            <h3 class="font-heading text-2xl uppercase tracking-wide truncate">Concrete Jungle</h3>
+                            <p class="text-sm text-zinc-400 truncate">MC BEAST</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Item 2 -->
+                    <div class="gsap-grid-item group relative bg-muted/30 border border-border/50 hover:border-accent transition-colors duration-300 p-4">
+                        <div class="aspect-square bg-zinc-800 mb-4 relative overflow-hidden group-hover:opacity-90 transition-opacity">
+                            <div class="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                                <button class="w-12 h-12 rounded-none bg-accent flex items-center justify-center text-background hover:scale-105 transition-transform">
+                                    <svg class="w-5 h-5 ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                </button>
+                            </div>
+                            <img src="https://images.unsplash.com/photo-1493225457124-a1a2a5f52228?w=500&q=80" alt="Album art" class="object-cover w-full h-full grayscale group-hover:grayscale-0 transition-all duration-500 transform group-hover:scale-105">
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="text-accent font-mono text-xs mb-1">Bandung</span>
+                            <h3 class="font-heading text-2xl uppercase tracking-wide truncate">Midnight Run</h3>
+                            <p class="text-sm text-zinc-400 truncate">FLOW STATE</p>
+                        </div>
+                    </div>
+
+                    <!-- Item 3 -->
+                    <div class="gsap-grid-item group relative bg-muted/30 border border-border/50 hover:border-accent transition-colors duration-300 p-4">
+                        <div class="aspect-square bg-zinc-800 mb-4 relative overflow-hidden group-hover:opacity-90 transition-opacity">
+                            <div class="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                                <button class="w-12 h-12 rounded-none bg-accent flex items-center justify-center text-background hover:scale-105 transition-transform">
+                                    <svg class="w-5 h-5 ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                </button>
+                            </div>
+                            <img src="https://images.unsplash.com/photo-1571330735066-03aaa9429d89?w=500&q=80" alt="Album art" class="object-cover w-full h-full grayscale group-hover:grayscale-0 transition-all duration-500 transform group-hover:scale-105">
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="text-accent font-mono text-xs mb-1">Yogyakarta</span>
+                            <h3 class="font-heading text-2xl uppercase tracking-wide truncate">Heritage Drill</h3>
+                            <p class="text-sm text-zinc-400 truncate">JAVANESE MOB</p>
+                        </div>
+                    </div>
+
+                    <!-- Item 4 -->
+                    <div class="gsap-grid-item group relative bg-muted/30 border border-border/50 hover:border-accent transition-colors duration-300 p-4">
+                        <div class="aspect-square bg-zinc-800 mb-4 relative overflow-hidden group-hover:opacity-90 transition-opacity">
+                            <div class="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                                <button class="w-12 h-12 rounded-none bg-accent flex items-center justify-center text-background hover:scale-105 transition-transform">
+                                    <svg class="w-5 h-5 ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                </button>
+                            </div>
+                            <img src="https://images.unsplash.com/photo-1508973379184-7517410fb0bc?w=500&q=80" alt="Album art" class="object-cover w-full h-full grayscale group-hover:grayscale-0 transition-all duration-500 transform group-hover:scale-105">
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="text-accent font-mono text-xs mb-1">Surabaya</span>
+                            <h3 class="font-heading text-2xl uppercase tracking-wide truncate">Eastside Grime</h3>
+                            <p class="text-sm text-zinc-400 truncate">SBY CARTEL</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stats / Community Section -->
+        <section id="community" class="py-24">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 border-y border-border py-12" id="stats-container">
+                    <div class="gsap-stat-item text-center">
+                        <p class="font-heading text-5xl md:text-7xl text-accent mb-2">2,048</p>
+                        <p class="font-mono text-sm text-zinc-400 uppercase tracking-widest">Active Artists</p>
+                    </div>
+                    <div class="gsap-stat-item text-center">
+                        <p class="font-heading text-5xl md:text-7xl text-accent mb-2">15K</p>
+                        <p class="font-mono text-sm text-zinc-400 uppercase tracking-widest">Tracks Submitted</p>
+                    </div>
+                    <div class="gsap-stat-item text-center">
+                        <p class="font-heading text-5xl md:text-7xl text-accent mb-2">84</p>
+                        <p class="font-mono text-sm text-zinc-400 uppercase tracking-widest">Cities</p>
+                    </div>
+                    <div class="gsap-stat-item text-center">
+                        <p class="font-heading text-5xl md:text-7xl text-accent mb-2">ONE</p>
+                        <p class="font-mono text-sm text-zinc-400 uppercase tracking-widest">Movement</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-border/50 bg-background pt-16 pb-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-12">
+                <div class="mb-8 md:mb-0">
+                    <a href="index.html" class="font-heading text-5xl tracking-wide">
+                        HIPHXP<span class="text-accent">.</span>ID
+                    </a>
+                    <p class="text-zinc-500 mt-2 max-w-sm">Elevating the Indonesian hip-hop scene. One beat at a time.</p>
+                </div>
+                
+                <div class="flex space-x-6">
+                    <a href="#" class="text-zinc-400 hover:text-accent transition-colors">
+                        <span class="sr-only">Instagram</span>
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                            <rect x="2" y="2" width="20" height="20" rx="5" ry="5" stroke-linecap="square"></rect>
+                            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" stroke-linecap="square"></path>
+                            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" stroke-linecap="square"></line>
+                        </svg>
+                    </a>
+                    <a href="#" class="text-zinc-400 hover:text-accent transition-colors">
+                        <span class="sr-only">Twitter</span>
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                            <path stroke-linecap="square" stroke-linejoin="miter" d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path>
+                        </svg>
+                    </a>
+                    <a href="#" class="text-zinc-400 hover:text-accent transition-colors">
+                        <span class="sr-only">YouTube</span>
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                            <path stroke-linecap="square" stroke-linejoin="miter" d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"></path>
+                            <polygon stroke-linecap="square" stroke-linejoin="miter" points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="border-t border-border pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-zinc-500 font-mono uppercase">
+                <p>&copy; 2026 HIPHXP.ID. All rights reserved.</p>
+                <div class="flex space-x-4 mt-4 md:mt-0">
+                    <a href="#" class="hover:text-foreground transition-colors">Terms</a>
+                    <a href="#" class="hover:text-foreground transition-colors">Privacy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- GSAP Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+    <!-- Mobile Menu Script -->
+    <script>
+        document.getElementById('mobile-menu-btn').addEventListener('click', function() {
+            var menu = document.getElementById('mobile-menu');
+            if (menu.classList.contains('hidden')) {
+                menu.classList.remove('hidden');
+            } else {
+                menu.classList.add('hidden');
+            }
+        });
+
+        // GSAP Animations
+        document.addEventListener("DOMContentLoaded", (event) => {
+            gsap.registerPlugin(ScrollTrigger);
+
+            // 1. Hero Entrance Animation (Runs once on load)
+            let tl = gsap.timeline();
+            
+            tl.to(".gsap-hero-el", {
+                y: 0,
+                opacity: 1,
+                duration: 0.8,
+                stagger: 0.15,
+                ease: "power3.out",
+                delay: 0.2
+            });
+
+            // 2. Scroll Reveal for Fresh Drops Grid
+            gsap.to(".gsap-grid-item", {
+                scrollTrigger: {
+                    trigger: "#featured",
+                    start: "top 80%", // trigger when top of section hits 80% of viewport
+                    once: true       // only animate once
+                },
+                y: 0,
+                opacity: 1,
+                duration: 0.6,
+                stagger: 0.1,
+                ease: "power2.out"
+            });
+
+            // 3. Scroll Reveal for Community Stats
+            gsap.to(".gsap-stat-item", {
+                scrollTrigger: {
+                    trigger: "#stats-container",
+                    start: "top 85%",
+                    once: true
+                },
+                scale: 1,
+                opacity: 1,
+                duration: 0.6,
+                stagger: 0.15,
+                ease: "back.out(1.7)"
+            });
+        });
+    </script>
+</body>
+</html>
