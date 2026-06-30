@@ -30,7 +30,7 @@
                     },
                     borderRadius: {
                         'none': '0',
-                        'sm': '0.125rem', // sharp corners
+                        'sm': '0.125rem',
                         DEFAULT: '0.25rem',
                         'md': '0.25rem',
                         'lg': '0.25rem',
@@ -49,6 +49,20 @@
         }
     </script>
     <style>
+        /* Base page transition */
+        body {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Hide cursor on desktop for custom cursor */
+        @media (min-width: 768px) {
+            * { cursor: none !important; }
+        }
+
         /* Grain/Noise Overlay */
         .noise-bg {
             position: fixed;
@@ -78,53 +92,120 @@
             transition: background-color 5000s ease-in-out 0s;
         }
 
+        /* Glitch Effect on Hover */
+        .glitch-hover { position: relative; }
+        .glitch-hover:hover::before, .glitch-hover:hover::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%; background: #09090b;
+        }
+        .glitch-hover:hover::before {
+            left: 2px; text-shadow: -1px 0 red; clip: rect(24px, 550px, 90px, 0);
+            animation: glitch-anim-2 0.4s infinite linear alternate-reverse; z-index: -1;
+        }
+        .glitch-hover:hover::after {
+            left: -2px; text-shadow: -1px 0 #22C55E; clip: rect(85px, 550px, 140px, 0);
+            animation: glitch-anim 0.4s infinite linear alternate-reverse; z-index: -2;
+        }
+        @keyframes glitch-anim {
+            0% { clip: rect(10px, 9999px, 44px, 0); }
+            20% { clip: rect(65px, 9999px, 14px, 0); }
+            40% { clip: rect(110px, 9999px, 88px, 0); }
+            60% { clip: rect(2px, 9999px, 54px, 0); }
+            80% { clip: rect(42px, 9999px, 12px, 0); }
+            100% { clip: rect(75px, 9999px, 98px, 0); }
+        }
+        @keyframes glitch-anim-2 {
+            0% { clip: rect(65px, 9999px, 100px, 0); }
+            20% { clip: rect(3px, 9999px, 20px, 0); }
+            40% { clip: rect(44px, 9999px, 55px, 0); }
+            60% { clip: rect(88px, 9999px, 99px, 0); }
+            80% { clip: rect(12px, 9999px, 33px, 0); }
+            100% { clip: rect(54px, 9999px, 77px, 0); }
+        }
+
         /* Initial GSAP states */
         .gsap-form-el { opacity: 0; transform: translateY(30px); }
+        .mobile-menu-link { opacity: 0; transform: translateY(20px); }
+
+        /* Custom Cursor Style */
+        .custom-cursor {
+            position: fixed; top: 0; left: 0; width: 12px; height: 12px;
+            background-color: #22C55E; border-radius: 50%; pointer-events: none;
+            z-index: 9999; transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s, background-color 0.3s;
+        }
+        .custom-cursor.active {
+            width: 40px; height: 40px; background-color: rgba(34, 197, 94, 0.2);
+            border: 1px solid #22C55E; backdrop-filter: blur(2px);
+        }
+
+        /* Hamburger Animation Classes */
+        .line-top, .line-bottom { transition: transform 0.3s ease, top 0.3s ease; }
+        .menu-open .line-top { transform: rotate(45deg); top: 50%; }
+        .menu-open .line-bottom { transform: rotate(-45deg); top: 50%; }
+        
+        /* Input focus scale */
+        input:focus, textarea:focus {
+            transform: scale(1.01);
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
     </style>
 </head>
 <body class="bg-background text-foreground font-sans antialiased selection:bg-accent selection:text-background min-h-screen flex flex-col relative overflow-x-hidden">
+
+    <!-- Custom Cursor -->
+    <div id="cursor" class="custom-cursor hidden md:block"></div>
 
     <!-- Noise Texture Overlay -->
     <div class="noise-bg"></div>
 
     <!-- Navigation -->
-    <nav class="sticky top-0 z-40 w-full border-b border-border/40 bg-background/80 backdrop-blur-md">
+    <nav class="fixed top-0 w-full z-[60] border-b border-border/40 bg-background/90 backdrop-blur-md">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-20">
-                <div class="flex-shrink-0 flex items-center">
-                    <a href="index.html" class="font-heading text-4xl tracking-wide hover:text-accent transition-colors duration-200">
+                <div class="flex-shrink-0 flex items-center magnetic-wrap">
+                    <a href="index.html" class="magnetic-el glitch-hover hover-target font-heading text-4xl tracking-wide hover:text-accent transition-colors duration-200 active:scale-[0.98]" data-text="HIPHXP.ID">
                         HIPHXP<span class="text-accent">.</span>ID
                     </a>
                 </div>
                 <div class="hidden md:flex items-center space-x-8">
-                    <a href="index.html#featured" class="text-sm font-medium tracking-wide uppercase hover:text-accent transition-colors">Featured</a>
-                    <a href="index.html#community" class="text-sm font-medium tracking-wide uppercase hover:text-accent transition-colors">Community</a>
-                    <a href="submit.html" class="inline-flex items-center justify-center px-6 py-2 border-2 border-accent bg-accent text-background font-heading tracking-wider text-lg transition-all duration-200 uppercase">
-                        Submit Track
-                    </a>
+                    <div class="magnetic-wrap"><a href="index.html#featured" class="magnetic-el hover-target text-sm font-medium tracking-wide uppercase hover:text-accent transition-colors">Featured</a></div>
+                    <div class="magnetic-wrap"><a href="index.html#community" class="magnetic-el hover-target text-sm font-medium tracking-wide uppercase hover:text-accent transition-colors">Community</a></div>
+                    <div class="magnetic-wrap">
+                        <a href="submit.html" class="magnetic-el hover-target inline-flex items-center justify-center px-6 py-2 border-2 border-accent bg-accent text-background font-heading tracking-wider text-lg transition-all duration-200 uppercase active:scale-[0.98]">
+                            Submit Track
+                        </a>
+                    </div>
                 </div>
                 <div class="md:hidden flex items-center">
-                    <button id="mobile-menu-btn" class="text-foreground hover:text-accent focus:outline-none">
-                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                        </svg>
+                    <button id="mobile-menu-btn" class="relative w-8 h-8 focus:outline-none z-[70] active:scale-95 transition-transform">
+                        <span class="line-top absolute left-1 right-1 top-[10px] h-[2px] bg-foreground origin-center"></span>
+                        <span class="line-bottom absolute left-1 right-1 top-[20px] h-[2px] bg-foreground origin-center"></span>
                     </button>
                 </div>
             </div>
         </div>
-        <div id="mobile-menu" class="hidden md:hidden border-t border-border bg-background">
-            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-                <a href="index.html#featured" class="block px-3 py-2 text-base font-medium uppercase hover:text-accent">Featured</a>
-                <a href="index.html#community" class="block px-3 py-2 text-base font-medium uppercase hover:text-accent">Community</a>
-                <a href="submit.html" class="block w-full text-center mt-4 px-6 py-3 bg-accent text-background font-heading text-xl uppercase">
-                    Submit Track
-                </a>
-            </div>
-        </div>
     </nav>
 
+    <!-- Full Screen Mobile Menu Overlay -->
+    <div id="mobile-menu-overlay" class="fixed inset-0 bg-background z-[55] flex-col justify-center items-center opacity-0 pointer-events-none hidden md:hidden pt-20">
+        <div class="flex flex-col space-y-8 text-center w-full px-6">
+            <a href="index.html#featured" class="mobile-menu-link text-4xl font-heading uppercase hover:text-accent active:text-accent transition-colors">Featured</a>
+            <a href="index.html#community" class="mobile-menu-link text-4xl font-heading uppercase hover:text-accent active:text-accent transition-colors">Community</a>
+            <a href="submit.html" class="mobile-menu-link w-full text-center px-6 py-4 border-2 border-accent bg-accent text-background font-heading text-3xl uppercase active:scale-[0.98] transition-transform">
+                Submit Track
+            </a>
+            <div class="mobile-menu-link pt-8 flex justify-center space-x-6">
+                <!-- Socials in menu -->
+                <a href="#" class="text-zinc-400 active:text-accent p-2"><svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><rect x="2" y="2" width="20" height="20" rx="5" ry="5" stroke-width="1.5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" stroke-width="1.5"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5" stroke-width="1.5"></line></svg></a>
+                <a href="#" class="text-zinc-400 active:text-accent p-2"><svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-width="1.5" d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg></a>
+            </div>
+        </div>
+    </div>
+
     <!-- Main Content -->
-    <main class="flex-grow flex items-center justify-center py-16 px-4 sm:px-6 lg:px-8 relative">
+    <main class="flex-grow flex items-center justify-center py-16 px-4 sm:px-6 lg:px-8 relative pt-32"> <!-- Added pt-32 for fixed nav -->
         <div class="max-w-2xl w-full space-y-8 z-10 relative">
             
             <div class="text-center md:text-left border-b border-border/50 pb-6">
@@ -141,34 +222,34 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="space-y-2">
                             <label for="artistName" class="block text-sm font-mono uppercase tracking-wider text-zinc-300">Artist Name <span class="text-accent">*</span></label>
-                            <input type="text" id="artistName" required class="w-full bg-zinc-950/80 border border-border px-4 py-3 text-foreground placeholder-zinc-600 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-colors rounded-none">
+                            <input type="text" id="artistName" required class="hover-target w-full bg-zinc-950/80 border border-border px-4 py-3 text-foreground placeholder-zinc-600 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all duration-200 rounded-none">
                         </div>
                         <div class="space-y-2">
                             <label for="trackTitle" class="block text-sm font-mono uppercase tracking-wider text-zinc-300">Track Title <span class="text-accent">*</span></label>
-                            <input type="text" id="trackTitle" required class="w-full bg-zinc-950/80 border border-border px-4 py-3 text-foreground placeholder-zinc-600 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-colors rounded-none">
+                            <input type="text" id="trackTitle" required class="hover-target w-full bg-zinc-950/80 border border-border px-4 py-3 text-foreground placeholder-zinc-600 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all duration-200 rounded-none">
                         </div>
                     </div>
 
                     <!-- URL Inputs -->
                     <div class="space-y-2">
                         <label for="trackUrl" class="block text-sm font-mono uppercase tracking-wider text-zinc-300">Track Link (SoundCloud/Spotify/YouTube) <span class="text-accent">*</span></label>
-                        <input type="url" id="trackUrl" required placeholder="https://" class="w-full bg-zinc-950/80 border border-border px-4 py-3 text-foreground placeholder-zinc-600 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-colors rounded-none">
+                        <input type="url" id="trackUrl" required placeholder="https://" class="hover-target w-full bg-zinc-950/80 border border-border px-4 py-3 text-foreground placeholder-zinc-600 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all duration-200 rounded-none">
                     </div>
 
                     <div class="space-y-2">
                         <label for="pressKit" class="block text-sm font-mono uppercase tracking-wider text-zinc-300">Press Kit / Drive Link (Optional)</label>
-                        <input type="url" id="pressKit" placeholder="https://" class="w-full bg-zinc-950/80 border border-border px-4 py-3 text-foreground placeholder-zinc-600 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-colors rounded-none">
+                        <input type="url" id="pressKit" placeholder="https://" class="hover-target w-full bg-zinc-950/80 border border-border px-4 py-3 text-foreground placeholder-zinc-600 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all duration-200 rounded-none">
                     </div>
 
                     <!-- Bio -->
                     <div class="space-y-2">
                         <label for="bio" class="block text-sm font-mono uppercase tracking-wider text-zinc-300">Short Bio / Story Behind The Track <span class="text-accent">*</span></label>
-                        <textarea id="bio" rows="4" required placeholder="Tell us who you are..." class="w-full bg-zinc-950/80 border border-border px-4 py-3 text-foreground placeholder-zinc-600 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-colors rounded-none resize-y"></textarea>
+                        <textarea id="bio" rows="4" required placeholder="Tell us who you are..." class="hover-target w-full bg-zinc-950/80 border border-border px-4 py-3 text-foreground placeholder-zinc-600 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all duration-200 rounded-none resize-y"></textarea>
                     </div>
                     
                     <!-- Submit Button -->
-                    <div class="pt-4">
-                        <button type="submit" id="submit-btn" class="w-full flex justify-center items-center px-8 py-5 border-2 border-accent bg-accent text-background font-heading text-2xl uppercase tracking-wider hover:bg-transparent hover:text-accent transition-colors duration-200 group active:scale-[0.98]">
+                    <div class="pt-4 magnetic-wrap">
+                        <button type="submit" id="submit-btn" class="magnetic-el hover-target w-full flex justify-center items-center px-8 py-5 border-2 border-accent bg-accent text-background font-heading text-2xl uppercase tracking-wider hover:bg-transparent hover:text-accent transition-colors duration-200 group active:scale-[0.98]">
                             <span id="btn-text">Send It To The Streets</span>
                             <svg id="btn-icon" class="ml-2 w-6 h-6 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
@@ -192,9 +273,11 @@
                 </div>
                 <h3 class="font-heading text-5xl uppercase tracking-wide mb-4">Track Received</h3>
                 <p class="text-zinc-400 mb-8 max-w-md mx-auto">Your submission is in the queue. Our curators will check it out and reach back if it fits the movement.</p>
-                <a href="index.html" class="inline-flex items-center justify-center px-8 py-4 border-2 border-border text-foreground font-heading text-xl uppercase tracking-wider hover:border-accent hover:text-accent transition-colors duration-200">
-                    Back to Home
-                </a>
+                <div class="magnetic-wrap inline-block">
+                    <a href="index.html" class="magnetic-el hover-target inline-flex items-center justify-center px-8 py-4 border-2 border-border text-foreground font-heading text-xl uppercase tracking-wider hover:border-accent hover:text-accent transition-colors duration-200 active:scale-[0.98]">
+                        Back to Home
+                    </a>
+                </div>
             </div>
 
         </div>
@@ -204,43 +287,49 @@
     <footer class="border-t border-border/50 bg-background pt-16 pb-8">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-12">
-                <div class="mb-8 md:mb-0">
-                    <a href="index.html" class="font-heading text-5xl tracking-wide">
+                <div class="mb-8 md:mb-0 magnetic-wrap inline-block">
+                    <a href="index.html" class="magnetic-el glitch-hover hover-target font-heading text-5xl tracking-wide active:scale-95 inline-block transition-transform" data-text="HIPHXP.ID">
                         HIPHXP<span class="text-accent">.</span>ID
                     </a>
                     <p class="text-zinc-500 mt-2 max-w-sm">Elevating the Indonesian hip-hop scene. One beat at a time.</p>
                 </div>
                 
                 <div class="flex space-x-6">
-                    <a href="#" class="text-zinc-400 hover:text-accent transition-colors">
-                        <span class="sr-only">Instagram</span>
-                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                            <rect x="2" y="2" width="20" height="20" rx="5" ry="5" stroke-linecap="square"></rect>
-                            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" stroke-linecap="square"></path>
-                            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" stroke-linecap="square"></line>
-                        </svg>
-                    </a>
-                    <a href="#" class="text-zinc-400 hover:text-accent transition-colors">
-                        <span class="sr-only">Twitter</span>
-                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                            <path stroke-linecap="square" stroke-linejoin="miter" d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path>
-                        </svg>
-                    </a>
-                    <a href="#" class="text-zinc-400 hover:text-accent transition-colors">
-                        <span class="sr-only">YouTube</span>
-                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                            <path stroke-linecap="square" stroke-linejoin="miter" d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"></path>
-                            <polygon stroke-linecap="square" stroke-linejoin="miter" points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon>
-                        </svg>
-                    </a>
+                    <div class="magnetic-wrap">
+                        <a href="#" class="magnetic-el hover-target block text-zinc-400 hover:text-accent active:text-accent transition-colors p-2 -m-2">
+                            <span class="sr-only">Instagram</span>
+                            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                <rect x="2" y="2" width="20" height="20" rx="5" ry="5" stroke-linecap="square"></rect>
+                                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" stroke-linecap="square"></path>
+                                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" stroke-linecap="square"></line>
+                            </svg>
+                        </a>
+                    </div>
+                    <div class="magnetic-wrap">
+                        <a href="#" class="magnetic-el hover-target block text-zinc-400 hover:text-accent active:text-accent transition-colors p-2 -m-2">
+                            <span class="sr-only">Twitter</span>
+                            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                <path stroke-linecap="square" stroke-linejoin="miter" d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path>
+                            </svg>
+                        </a>
+                    </div>
+                    <div class="magnetic-wrap">
+                        <a href="#" class="magnetic-el hover-target block text-zinc-400 hover:text-accent active:text-accent transition-colors p-2 -m-2">
+                            <span class="sr-only">YouTube</span>
+                            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                <path stroke-linecap="square" stroke-linejoin="miter" d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"></path>
+                                <polygon stroke-linecap="square" stroke-linejoin="miter" points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon>
+                            </svg>
+                        </a>
+                    </div>
                 </div>
             </div>
             
             <div class="border-t border-border pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-zinc-500 font-mono uppercase">
                 <p>&copy; 2026 HIPHXP.ID. All rights reserved.</p>
                 <div class="flex space-x-4 mt-4 md:mt-0">
-                    <a href="#" class="hover:text-foreground transition-colors">Terms</a>
-                    <a href="#" class="hover:text-foreground transition-colors">Privacy</a>
+                    <a href="#" class="hover-target hover:text-foreground active:text-accent transition-colors">Terms</a>
+                    <a href="#" class="hover-target hover:text-foreground active:text-accent transition-colors">Privacy</a>
                 </div>
             </div>
         </div>
@@ -251,26 +340,82 @@
 
     <!-- Scripts -->
     <script>
-        // Mobile Menu
-        document.getElementById('mobile-menu-btn').addEventListener('click', function() {
-            var menu = document.getElementById('mobile-menu');
-            if (menu.classList.contains('hidden')) {
-                menu.classList.remove('hidden');
+        const isDesktop = window.innerWidth >= 768;
+
+        // Custom Cursor Logic
+        const cursor = document.getElementById('cursor');
+        if (isDesktop && cursor) {
+            document.addEventListener('mousemove', (e) => {
+                gsap.to(cursor, { x: e.clientX, y: e.clientY, duration: 0.1, ease: "power2.out" });
+            });
+            const hoverTargets = document.querySelectorAll('a, button, input, textarea, .hover-target');
+            hoverTargets.forEach(target => {
+                target.addEventListener('mouseenter', () => cursor.classList.add('active'));
+                target.addEventListener('mouseleave', () => cursor.classList.remove('active'));
+            });
+        }
+
+        // Magnetic Hover Logic
+        if (isDesktop) {
+            const magneticWraps = document.querySelectorAll('.magnetic-wrap');
+            magneticWraps.forEach(wrap => {
+                const el = wrap.querySelector('.magnetic-el');
+                if (!el) return;
+                wrap.addEventListener('mousemove', (e) => {
+                    const rect = wrap.getBoundingClientRect();
+                    const x = e.clientX - rect.left - rect.width / 2;
+                    const y = e.clientY - rect.top - rect.height / 2;
+                    gsap.to(el, { x: x * 0.4, y: y * 0.4, duration: 0.3, ease: "power2.out" });
+                });
+                wrap.addEventListener('mouseleave', () => {
+                    gsap.to(el, { x: 0, y: 0, duration: 0.7, ease: "elastic.out(1, 0.3)" });
+                });
+            });
+        }
+
+        // Mobile Menu Animation
+        const menuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+        let menuOpen = false;
+        
+        menuBtn.addEventListener('click', () => {
+            menuOpen = !menuOpen;
+            if(menuOpen) {
+                menuBtn.classList.add('menu-open');
+                mobileMenuOverlay.classList.remove('hidden');
+                document.body.style.overflow = 'hidden'; // Prevent scrolling
+                
+                // Animate overlay in
+                gsap.to(mobileMenuOverlay, { opacity: 1, duration: 0.3, ease: "power2.out", pointerEvents: "auto" });
+                // Animate links in
+                gsap.to(".mobile-menu-link", { y: 0, opacity: 1, duration: 0.4, stagger: 0.1, delay: 0.1, ease: "power3.out" });
             } else {
-                menu.classList.add('hidden');
+                closeMenu();
             }
         });
 
+        // Close menu when clicking a link
+        document.querySelectorAll('.mobile-menu-link').forEach(link => {
+            link.addEventListener('click', closeMenu);
+        });
+
+        function closeMenu() {
+            menuOpen = false;
+            menuBtn.classList.remove('menu-open');
+            document.body.style.overflow = '';
+            
+            // Animate links out
+            gsap.to(".mobile-menu-link", { y: 20, opacity: 0, duration: 0.3, ease: "power2.in" });
+            // Animate overlay out
+            gsap.to(mobileMenuOverlay, { 
+                opacity: 0, duration: 0.3, delay: 0.2, ease: "power2.in", pointerEvents: "none",
+                onComplete: () => mobileMenuOverlay.classList.add('hidden')
+            });
+        }
+
         // GSAP Form Entrance Animation
         document.addEventListener("DOMContentLoaded", () => {
-            gsap.to(".gsap-form-el", {
-                y: 0,
-                opacity: 1,
-                duration: 0.8,
-                stagger: 0.1,
-                ease: "power3.out",
-                delay: 0.2
-            });
+            gsap.to(".gsap-form-el", { y: 0, opacity: 1, duration: 0.8, stagger: 0.1, ease: "power3.out", delay: 0.2 });
         });
 
         // Form Submission Simulation
@@ -295,25 +440,16 @@
                 
                 // GSAP exit and enter animation
                 gsap.to(formContainer, {
-                    opacity: 0,
-                    y: -20,
-                    duration: 0.4,
-                    ease: "power2.in",
+                    opacity: 0, y: -20, duration: 0.4, ease: "power2.in",
                     onComplete: () => {
                         formContainer.classList.add('hidden');
                         successContainer.classList.remove('hidden');
                         
                         // Set initial state for success container before animating
                         gsap.set(successContainer, { opacity: 0, y: 20 });
-                        gsap.to(successContainer, {
-                            opacity: 1,
-                            y: 0,
-                            duration: 0.5,
-                            ease: "power3.out"
-                        });
+                        gsap.to(successContainer, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" });
                     }
                 });
-                
             }, 1500);
         });
     </script>
