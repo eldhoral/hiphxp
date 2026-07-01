@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HIPHXP - The Underground is Alive (V2)</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        background: '#ffffff',
+                        foreground: '#000000',
+                        accent: '#000000',
+                        muted: '#f4f4f5',
+                        border: '#e4e4e7',
+                    },
+                    fontFamily: {
+                        heading: ['"Bebas Neue"', 'sans-serif'],
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .noise-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            pointer-events: none; z-index: 50; opacity: 0.08;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        /* Marquee */
+        .marquee-container {
+            width: 100%; overflow: hidden; white-space: nowrap;
+            background: #000000; color: #ffffff; padding: 1.5rem 0;
+            position: relative; z-index: 20;
+        }
+        .marquee-content {
+            display: inline-block; animation: marquee 20s linear infinite;
+        }
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* Brutalist borders */
+        .brutal-border {
+            border: 3px solid #000;
+        }
+        .brutal-shadow {
+            box-shadow: 8px 8px 0px 0px #000;
+            transition: all 0.2s ease;
+        }
+        .brutal-shadow:hover {
+            transform: translate(4px, 4px);
+            box-shadow: 4px 4px 0px 0px #000;
+        }
+        .brutal-shadow:active {
+            transform: translate(8px, 8px);
+            box-shadow: 0px 0px 0px 0px #000;
+        }
+        
+        .brutal-shadow-static {
+            box-shadow: 6px 6px 0px 0px #000;
+        }
+
+        .text-outline {
+            color: transparent;
+            -webkit-text-stroke: 2px #000;
+        }
+    </style>
+</head>
+<body class="bg-background text-foreground font-sans antialiased selection:bg-accent selection:text-background min-h-screen flex flex-col md:flex-row relative">
+
+    <div class="noise-bg"></div>
+
+    <!-- Vertical Sidebar (Desktop) / Topbar (Mobile) -->
+    <aside class="w-full md:w-24 md:h-screen md:fixed md:top-0 md:left-0 border-b md:border-b-0 md:border-r-[3px] border-black bg-white z-[60] flex flex-row md:flex-col justify-between items-center py-4 px-6 md:py-8 md:px-0">
+        <a href="index.html" class="font-heading text-4xl md:-rotate-90 md:transform md:mt-16 whitespace-nowrap tracking-wider hover:opacity-50 transition-opacity">
+            HIPHXP<span class="text-zinc-400">.</span>ID
+        </a>
+        
+        <div class="hidden md:flex flex-col space-y-16 mt-32 items-center">
+            <a href="#featured" class="font-heading text-xl -rotate-90 transform uppercase tracking-widest hover:scale-110 transition-transform">Featured</a>
+            <a href="#community" class="font-heading text-xl -rotate-90 transform uppercase tracking-widest hover:scale-110 transition-transform">Community</a>
+        </div>
+        
+        <a href="submit.html" class="hidden md:flex mt-auto mb-8 w-12 h-12 brutal-border bg-black text-white items-center justify-center brutal-shadow">
+            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+        </a>
+
+        <!-- Mobile menu toggle -->
+        <button id="mobile-menu-btn" class="md:hidden font-heading text-xl uppercase tracking-widest px-4 py-2 brutal-border bg-black text-white">Menu</button>
+    </aside>
+
+    <!-- Mobile Menu Overlay -->
+    <div id="mobile-menu-overlay" class="fixed inset-0 bg-white z-[55] flex-col justify-center items-center opacity-0 pointer-events-none hidden md:hidden">
+        <div class="flex flex-col space-y-8 text-center w-full px-6">
+            <a href="#featured" class="mobile-menu-link text-6xl font-heading uppercase hover:opacity-50 transition-opacity">Featured</a>
+            <a href="#community" class="mobile-menu-link text-6xl font-heading uppercase hover:opacity-50 transition-opacity">Community</a>
+            <a href="submit.html" class="mobile-menu-link w-full text-center px-6 py-4 brutal-border bg-black text-white font-heading text-3xl uppercase brutal-shadow">
+                Submit Track
+            </a>
+            <button id="close-menu-btn" class="mt-12 text-zinc-500 uppercase tracking-widest font-mono text-sm underline">Close</button>
+        </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow md:ml-24">
+        
+        <!-- Hero Split Screen -->
+        <section class="flex flex-col lg:flex-row min-h-screen border-b-[3px] border-black">
+            <!-- Left Text Area -->
+            <div class="w-full lg:w-1/2 flex flex-col justify-center p-8 lg:p-16 relative border-b-[3px] lg:border-b-0 lg:border-r-[3px] border-black bg-white z-10">
+                <span class="font-mono text-sm uppercase tracking-widest mb-6 border-[3px] border-black inline-block px-4 py-2 self-start bg-zinc-100">Indonesia Hip-Hop Registry</span>
+                <h1 class="font-heading text-7xl sm:text-8xl lg:text-9xl leading-[0.8] tracking-tighter uppercase mb-8">
+                    The Streets<br>
+                    <span class="text-outline">Are</span><br>
+                    Listening
+                </h1>
+                <p class="text-lg md:text-xl text-zinc-600 max-w-md font-light mb-12 leading-relaxed">
+                    The ultimate grassroots platform for Indonesian hip-hop artists. Drop your tracks, submit your press kit, and get heard. Raw, unedited, authentic.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-6">
+                    <a href="submit.html" class="brutal-border bg-black text-white px-8 py-4 font-heading text-3xl uppercase brutal-shadow text-center">
+                        Submit Music
+                    </a>
+                    <a href="#featured" class="brutal-border bg-white text-black px-8 py-4 font-heading text-3xl uppercase brutal-shadow text-center">
+                        Explore
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Right Image Area -->
+            <div class="w-full lg:w-1/2 h-[50vh] lg:h-auto relative overflow-hidden bg-zinc-900">
+                <img src="https://images.unsplash.com/photo-1571330735066-03aaa9429d89?w=1000&q=80" alt="Hip Hop Artist" class="object-cover w-full h-full grayscale opacity-90 mix-blend-luminosity">
+                <div class="absolute inset-0 border-[20px] border-black pointer-events-none hidden lg:block"></div>
+            </div>
+        </section>
+
+        <!-- Marquee Ticker -->
+        <div class="marquee-container font-heading text-4xl uppercase tracking-widest border-b-[3px] border-black">
+            <div class="marquee-content">
+                THE UNDERGROUND IS ALIVE <span class="mx-6">///</span> SUPPORT LOCAL ARTISTS <span class="mx-6">///</span> NO INDUSTRY PLANTS <span class="mx-6">///</span> PURE HIP-HOP <span class="mx-6">///</span>
+                THE UNDERGROUND IS ALIVE <span class="mx-6">///</span> SUPPORT LOCAL ARTISTS <span class="mx-6">///</span> NO INDUSTRY PLANTS <span class="mx-6">///</span> PURE HIP-HOP <span class="mx-6">///</span>
+            </div>
+            <div class="marquee-content" aria-hidden="true">
+                THE UNDERGROUND IS ALIVE <span class="mx-6">///</span> SUPPORT LOCAL ARTISTS <span class="mx-6">///</span> NO INDUSTRY PLANTS <span class="mx-6">///</span> PURE HIP-HOP <span class="mx-6">///</span>
+                THE UNDERGROUND IS ALIVE <span class="mx-6">///</span> SUPPORT LOCAL ARTISTS <span class="mx-6">///</span> NO INDUSTRY PLANTS <span class="mx-6">///</span> PURE HIP-HOP <span class="mx-6">///</span>
+            </div>
+        </div>
+
+        <!-- Featured Section (Asymmetrical Grid) -->
+        <section id="featured" class="py-24 p-8 lg:p-16 border-b-[3px] border-black bg-zinc-50">
+            <div class="mb-16 flex flex-col md:flex-row justify-between items-start md:items-end border-b-[3px] border-black pb-8">
+                <h2 class="font-heading text-6xl md:text-8xl uppercase tracking-tight leading-none">Fresh Drops</h2>
+                <a href="#" class="font-mono text-sm uppercase tracking-widest font-bold underline mt-4 md:mt-0 hover:text-zinc-500">View Catalog &rarr;</a>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Large Feature (spans 2 cols on lg) -->
+                <div class="lg:col-span-2 brutal-border bg-white p-6 brutal-shadow group flex flex-col h-full">
+                    <div class="h-64 sm:h-96 w-full bg-black mb-6 overflow-hidden border-[3px] border-black">
+                        <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=800&q=80" alt="Album" class="w-full h-full object-cover grayscale transition-transform duration-700 group-hover:scale-105">
+                    </div>
+                    <div class="flex justify-between items-start mt-auto">
+                        <div>
+                            <span class="inline-block px-2 py-1 bg-black text-white font-mono text-xs uppercase mb-2">Jakarta Selatan</span>
+                            <h3 class="font-heading text-4xl uppercase">Concrete Jungle</h3>
+                            <p class="font-mono text-sm text-zinc-500 mt-1">MC BEAST</p>
+                        </div>
+                        <button class="w-12 h-12 brutal-border bg-black text-white flex items-center justify-center group-hover:bg-white group-hover:text-black transition-colors">
+                            <svg class="w-6 h-6 ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Standard Feature -->
+                <div class="brutal-border bg-white p-6 brutal-shadow group flex flex-col h-full">
+                    <div class="h-64 sm:h-96 lg:h-64 w-full bg-black mb-6 overflow-hidden border-[3px] border-black">
+                        <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=500&q=80" alt="Album" class="w-full h-full object-cover grayscale transition-transform duration-700 group-hover:scale-105">
+                    </div>
+                    <div class="flex justify-between items-start mt-auto">
+                        <div>
+                            <span class="inline-block px-2 py-1 bg-black text-white font-mono text-xs uppercase mb-2">Bandung</span>
+                            <h3 class="font-heading text-3xl uppercase">Midnight Run</h3>
+                            <p class="font-mono text-sm text-zinc-500 mt-1">FLOW STATE</p>
+                        </div>
+                        <button class="w-10 h-10 brutal-border bg-black text-white flex items-center justify-center group-hover:bg-white group-hover:text-black transition-colors">
+                            <svg class="w-4 h-4 ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Standard Feature -->
+                <div class="brutal-border bg-white p-6 brutal-shadow group flex flex-col h-full">
+                    <div class="h-64 w-full bg-black mb-6 overflow-hidden border-[3px] border-black">
+                        <img src="https://images.unsplash.com/photo-1571330735066-03aaa9429d89?w=500&q=80" alt="Album" class="w-full h-full object-cover grayscale transition-transform duration-700 group-hover:scale-105">
+                    </div>
+                    <div class="flex justify-between items-start mt-auto">
+                        <div>
+                            <span class="inline-block px-2 py-1 bg-black text-white font-mono text-xs uppercase mb-2">Yogyakarta</span>
+                            <h3 class="font-heading text-3xl uppercase">Heritage Drill</h3>
+                            <p class="font-mono text-sm text-zinc-500 mt-1">JAVANESE MOB</p>
+                        </div>
+                        <button class="w-10 h-10 brutal-border bg-black text-white flex items-center justify-center group-hover:bg-white group-hover:text-black transition-colors">
+                            <svg class="w-4 h-4 ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Standard Feature -->
+                <div class="lg:col-span-2 brutal-border bg-black text-white p-6 brutal-shadow group flex flex-col sm:flex-row gap-6 h-full items-center">
+                    <div class="h-48 w-full sm:w-48 bg-zinc-900 flex-shrink-0 border-[3px] border-white overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1508973379184-7517410fb0bc?w=500&q=80" alt="Album" class="w-full h-full object-cover grayscale transition-transform duration-700 group-hover:scale-105">
+                    </div>
+                    <div class="flex-grow flex flex-col justify-center w-full">
+                        <span class="inline-block px-2 py-1 bg-white text-black font-mono text-xs uppercase mb-2 self-start">Surabaya</span>
+                        <h3 class="font-heading text-4xl sm:text-5xl uppercase">Eastside Grime</h3>
+                        <p class="font-mono text-sm text-zinc-400 mt-2">SBY CARTEL</p>
+                        <div class="mt-6 flex gap-4">
+                            <button class="px-6 py-2 brutal-border border-white bg-white text-black font-heading text-xl uppercase hover:bg-black hover:text-white transition-colors">Play</button>
+                            <button class="px-6 py-2 brutal-border border-white bg-black text-white font-heading text-xl uppercase hover:bg-white hover:text-black transition-colors">Share</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="bg-black text-white p-8 lg:p-16 flex flex-col md:flex-row justify-between items-start gap-12">
+            <div>
+                <a href="index.html" class="font-heading text-6xl md:text-8xl tracking-wider hover:text-zinc-400 transition-colors block leading-none">
+                    HIPHXP<span class="text-zinc-500">.</span>ID
+                </a>
+                <p class="font-mono text-sm text-zinc-500 mt-4 max-w-sm uppercase">Elevating the Indonesian hip-hop scene. One beat at a time.</p>
+            </div>
+            
+            <div class="flex flex-col sm:flex-row gap-12 font-mono text-sm uppercase tracking-widest">
+                <div class="flex flex-col gap-4">
+                    <span class="text-zinc-500 font-bold border-b border-zinc-800 pb-2">Socials</span>
+                    <a href="#" class="hover:text-zinc-400 transition-colors">Instagram</a>
+                    <a href="#" class="hover:text-zinc-400 transition-colors">Twitter</a>
+                    <a href="#" class="hover:text-zinc-400 transition-colors">YouTube</a>
+                </div>
+                <div class="flex flex-col gap-4">
+                    <span class="text-zinc-500 font-bold border-b border-zinc-800 pb-2">Legal</span>
+                    <a href="#" class="hover:text-zinc-400 transition-colors">Terms</a>
+                    <a href="#" class="hover:text-zinc-400 transition-colors">Privacy</a>
+                    <span class="text-zinc-600 mt-4">&copy; 2026</span>
+                </div>
+            </div>
+        </footer>
+    </main>
+
+    <!-- Floating Design Switcher Menu -->
+    <div class="fixed bottom-6 right-6 z-[100]">
+        <div id="design-switcher-menu" class="hidden absolute bottom-full right-0 mb-2 w-64 bg-white brutal-border brutal-shadow-static border-black flex-col">
+            <div class="px-4 py-2 bg-black text-white font-mono text-xs uppercase tracking-widest border-b-[3px] border-black">Select Design</div>
+            <a href="index.html" class="px-4 py-3 font-heading text-xl uppercase hover:bg-zinc-100 border-b-[3px] border-black transition-colors text-black">Vibrant Original</a>
+            <a href="index-achromatic.html" class="px-4 py-3 font-heading text-xl uppercase hover:bg-zinc-100 border-b-[3px] border-black transition-colors text-black">Achromatic V1 (Dark)</a>
+            <a href="index-achromatic-v2.html" class="px-4 py-3 font-heading text-xl uppercase bg-black text-white transition-colors flex justify-between items-center">
+                Achromatic V2 (Light)
+                <span class="w-2 h-2 rounded-full bg-white"></span>
+            </a>
+            <a href="index-crazy.html" class="px-4 py-3 font-heading text-xl uppercase hover:bg-zinc-100 border-b-[3px] border-black transition-colors text-black">Chaos V3 (Exp)</a>
+            <a href="index-retro.html" class="px-4 py-3 font-heading text-xl uppercase hover:bg-zinc-100 border-b-[3px] border-black transition-colors text-black">Retro OS V4</a>
+            <a href="index-minimal.html" class="px-4 py-3 font-heading text-xl uppercase hover:bg-zinc-100 border-b-[3px] border-black transition-colors text-black">Minimalist V5</a>
+        </div>
+        <button id="design-switcher-btn" class="px-6 py-4 bg-white text-black brutal-border border-black font-heading tracking-wider uppercase text-2xl brutal-shadow flex items-center gap-3">
+            Design Switcher
+            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="3" d="M4 6h16M4 12h16m-7 6h7" />
+            </svg>
+        </button>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        const menuBtn = document.getElementById('mobile-menu-btn');
+        const closeMenuBtn = document.getElementById('close-menu-btn');
+        const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+        
+        const toggleMenu = () => {
+            const isHidden = mobileMenuOverlay.classList.contains('hidden');
+            if (isHidden) {
+                mobileMenuOverlay.classList.remove('hidden');
+                setTimeout(() => {
+                    mobileMenuOverlay.classList.remove('opacity-0');
+                    mobileMenuOverlay.classList.remove('pointer-events-none');
+                }, 10);
+                document.body.style.overflow = 'hidden';
+            } else {
+                mobileMenuOverlay.classList.add('opacity-0');
+                mobileMenuOverlay.classList.add('pointer-events-none');
+                setTimeout(() => {
+                    mobileMenuOverlay.classList.add('hidden');
+                }, 300);
+                document.body.style.overflow = '';
+            }
+        };
+
+        menuBtn.addEventListener('click', toggleMenu);
+        closeMenuBtn.addEventListener('click', toggleMenu);
+        
+        document.querySelectorAll('.mobile-menu-link').forEach(link => {
+            link.addEventListener('click', toggleMenu);
+        });
+
+        // Design Switcher Logic
+        const switcherBtn = document.getElementById('design-switcher-btn');
+        const switcherMenu = document.getElementById('design-switcher-menu');
+        if (switcherBtn && switcherMenu) {
+            switcherBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                switcherMenu.classList.toggle('hidden');
+                switcherMenu.classList.toggle('flex');
+            });
+            document.addEventListener('click', (e) => {
+                if (!switcherMenu.contains(e.target) && !switcherBtn.contains(e.target)) {
+                    switcherMenu.classList.add('hidden');
+                    switcherMenu.classList.remove('flex');
+                }
+            });
+        }
+    </script>
+</body>
+</html>

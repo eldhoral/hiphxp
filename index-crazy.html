@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HIPHXP - CHAOS (V3)</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;900&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        background: '#e5e5e5',
+                        foreground: '#111111',
+                    },
+                    fontFamily: {
+                        heading: ['"Bebas Neue"', 'sans-serif'],
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            height: 100dvh;
+            position: fixed;
+            overflow: hidden;
+            background-color: #e5e5e5;
+            cursor: none;
+            touch-action: none;
+        }
+
+        /* The horizontal scroll container */
+        .horizontal-scroll-wrapper {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            height: 100dvh;
+            display: flex;
+            will-change: transform;
+        }
+
+        /* Custom Cursor */
+        #cursor-invert {
+            position: fixed;
+            top: 0; left: 0;
+            width: 80px; height: 80px;
+            border-radius: 50%;
+            background-color: white;
+            mix-blend-mode: difference;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: width 0.2s, height 0.2s;
+        }
+        body:active #cursor-invert {
+            width: 40px; height: 40px;
+        }
+
+        /* Noise */
+        .noise {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            pointer-events: none; z-index: 50; opacity: 0.15;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        /* Massive Typography */
+        .mega-text {
+            font-size: 30vw;
+            line-height: 0.8;
+            white-space: nowrap;
+            color: #111;
+            mix-blend-mode: difference;
+            pointer-events: none;
+        }
+
+        .outline-text {
+            color: transparent;
+            -webkit-text-stroke: 2px #fff;
+        }
+
+        /* Draggable elements */
+        .draggable {
+            cursor: grab;
+            position: absolute;
+        }
+        .draggable:active {
+            cursor: grabbing;
+        }
+
+        .panel {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            flex-shrink: 0;
+        }
+
+        /* Vertical Marquee */
+        .vertical-marquee {
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            white-space: nowrap;
+            animation: marquee-vert 15s linear infinite;
+        }
+        @keyframes marquee-vert {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-50%); }
+        }
+
+    </style>
+</head>
+<body class="text-foreground font-sans antialiased selection:bg-black selection:text-white">
+
+    <div id="cursor-invert" class="hidden md:block"></div>
+    <div class="noise"></div>
+
+    <!-- Fixed Header -->
+    <header class="fixed top-0 left-0 w-full p-6 z-[60] flex justify-between items-start pointer-events-none mix-blend-difference text-white">
+        <a href="index.html" class="font-heading text-5xl tracking-wider pointer-events-auto hover:opacity-50 transition-opacity">HIPHXP<span class="text-zinc-500">.ID</span></a>
+        <div class="text-right font-mono text-xs uppercase tracking-widest leading-loose">
+            <p>Scroll to Explore</p>
+            <p>Drag the Images</p>
+            <p>Embrace the Chaos</p>
+        </div>
+    </header>
+
+    <div class="fixed bottom-6 left-6 z-[60] pointer-events-none mix-blend-difference text-white">
+        <a href="submit.html" class="pointer-events-auto border-2 border-white px-6 py-3 font-heading text-2xl uppercase hover:bg-white hover:text-black transition-colors">Submit Track</a>
+    </div>
+
+    <!-- Horizontal Scroll Wrapper -->
+    <div class="horizontal-scroll-wrapper" id="scroll-container">
+        
+        <!-- Panel 1: Hero -->
+        <div class="panel bg-[#e5e5e5] overflow-hidden flex items-center justify-center relative">
+            <h1 class="mega-text font-heading absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 text-white outline-text">THE STREETS</h1>
+            <h1 class="mega-text font-heading absolute top-[60%] left-[55%] transform -translate-x-1/2 -translate-y-1/2 z-30">ARE LISTENING</h1>
+            
+            <div class="draggable z-20" style="top: 20%; left: 10%; width: 30vw; height: 40vh;">
+                <img src="https://images.unsplash.com/photo-1571330735066-03aaa9429d89?w=800&q=80" class="w-full h-full object-cover grayscale contrast-125 border-4 border-black shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] pointer-events-none">
+            </div>
+            
+            <div class="draggable z-20" style="top: 50%; left: 60%; width: 25vw; height: 35vh;">
+                <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=800&q=80" class="w-full h-full object-cover grayscale contrast-125 border-4 border-black shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] pointer-events-none">
+            </div>
+
+            <!-- Vertical Text -->
+            <div class="absolute right-12 top-0 h-[200vh] overflow-hidden flex items-start z-0 opacity-20">
+                <div class="font-heading text-8xl uppercase vertical-marquee">
+                    INDONESIA HIP-HOP REGISTRY /// NO INDUSTRY PLANTS /// SUPPORT LOCAL ///
+                    INDONESIA HIP-HOP REGISTRY /// NO INDUSTRY PLANTS /// SUPPORT LOCAL ///
+                </div>
+            </div>
+        </div>
+
+        <!-- Panel 2: Chaotic Grid / Info -->
+        <div class="panel bg-[#111111] overflow-hidden relative">
+            <h2 class="mega-text font-heading absolute -left-[20%] top-1/4 z-10 text-white outline-text opacity-30 rotate-12">COMMUNITY</h2>
+            
+            <div class="absolute top-1/4 left-1/4 max-w-lg z-30 text-white mix-blend-difference">
+                <h3 class="font-heading text-7xl uppercase mb-4">Grassroots Platform</h3>
+                <p class="font-mono text-lg leading-relaxed text-zinc-400">
+                    The ultimate platform for Indonesian hip-hop artists. Drop your tracks, submit your press kit, and get heard. Raw, unedited, authentic.
+                </p>
+            </div>
+
+            <!-- Stats scattered randomly -->
+            <div class="draggable z-20 absolute bg-white text-black p-8 border-4 border-black shadow-[8px_8px_0px_0px_rgba(255,255,255,0.2)]" style="top: 60%; left: 15%;">
+                <p class="font-heading text-8xl">2,048</p>
+                <p class="font-mono text-sm uppercase font-bold">Active Artists</p>
+            </div>
+            
+            <div class="draggable z-20 absolute bg-white text-black p-8 border-4 border-black shadow-[8px_8px_0px_0px_rgba(255,255,255,0.2)]" style="top: 20%; left: 70%;">
+                <p class="font-heading text-8xl">15K</p>
+                <p class="font-mono text-sm uppercase font-bold">Tracks Submitted</p>
+            </div>
+            
+            <div class="draggable z-20 absolute bg-white text-black p-8 border-4 border-black shadow-[8px_8px_0px_0px_rgba(255,255,255,0.2)]" style="top: 70%; left: 60%;">
+                <p class="font-heading text-8xl">84</p>
+                <p class="font-mono text-sm uppercase font-bold">Cities</p>
+            </div>
+        </div>
+
+        <!-- Panel 3: Featured Tracks Collage -->
+        <div class="panel bg-[#e5e5e5] overflow-hidden relative">
+            <h2 class="font-heading text-[20vw] absolute top-0 left-0 leading-none opacity-10 pointer-events-none mix-blend-multiply">FRESH DROPS</h2>
+            
+            <!-- Draggable Track Cards -->
+            <div class="draggable z-30 bg-black text-white p-4 border-2 border-black w-72 transform -rotate-6" style="top: 20%; left: 20%;">
+                <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=500&q=80" class="w-full aspect-square object-cover grayscale mb-4 pointer-events-none">
+                <span class="font-mono text-xs text-zinc-400">Jakarta Selatan</span>
+                <h4 class="font-heading text-3xl uppercase">Concrete Jungle</h4>
+            </div>
+
+            <div class="draggable z-40 bg-white text-black p-4 border-4 border-black w-80 transform rotate-3" style="top: 40%; left: 40%;">
+                <img src="https://images.unsplash.com/photo-1508973379184-7517410fb0bc?w=500&q=80" class="w-full aspect-square object-cover grayscale mb-4 pointer-events-none">
+                <span class="font-mono text-xs text-zinc-500">Bandung</span>
+                <h4 class="font-heading text-4xl uppercase">Midnight Run</h4>
+            </div>
+
+            <div class="draggable z-20 bg-zinc-800 text-white p-4 border-2 border-black w-64 transform rotate-12" style="top: 15%; left: 65%;">
+                <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=500&q=80" class="w-full aspect-square object-cover grayscale mb-4 pointer-events-none">
+                <span class="font-mono text-xs text-zinc-400">Yogyakarta</span>
+                <h4 class="font-heading text-2xl uppercase">Heritage Drill</h4>
+            </div>
+            
+            <div class="draggable z-50 bg-black text-white p-4 border-2 border-white w-96 transform -rotate-2" style="top: 55%; left: 70%;">
+                <img src="https://images.unsplash.com/photo-1571330735066-03aaa9429d89?w=500&q=80" class="w-full aspect-[21/9] object-cover grayscale mb-4 pointer-events-none">
+                <span class="font-mono text-xs text-zinc-400">Surabaya</span>
+                <h4 class="font-heading text-5xl uppercase">Eastside Grime</h4>
+            </div>
+        </div>
+
+        <!-- Panel 4: Footer -->
+        <div class="panel bg-[#111111] flex flex-col items-center justify-center relative text-white text-center">
+            <h1 class="mega-text font-heading z-10 opacity-20">HIPHXP.ID</h1>
+            <div class="z-20 flex flex-col gap-8 mix-blend-difference">
+                <a href="#" class="font-heading text-6xl uppercase hover:italic transition-all">Instagram</a>
+                <a href="#" class="font-heading text-6xl uppercase hover:italic transition-all">Twitter</a>
+                <a href="#" class="font-heading text-6xl uppercase hover:italic transition-all">YouTube</a>
+            </div>
+            <p class="absolute bottom-12 font-mono text-sm text-zinc-500 uppercase tracking-widest">&copy; 2026. Keep it underground.</p>
+        </div>
+
+    </div>
+
+    <!-- Floating Design Switcher Menu -->
+    <div class="fixed bottom-6 right-6 z-[100]">
+        <div id="design-switcher-menu" class="hidden absolute bottom-full right-0 mb-2 w-64 bg-white border-4 border-black flex-col shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+            <div class="px-4 py-2 bg-black text-white font-mono text-xs uppercase tracking-widest border-b-[4px] border-black">Select Design</div>
+            <a href="index.html" class="px-4 py-3 font-heading text-xl uppercase hover:bg-zinc-200 border-b-[4px] border-black transition-colors text-black">Vibrant Original</a>
+            <a href="index-achromatic.html" class="px-4 py-3 font-heading text-xl uppercase hover:bg-zinc-200 border-b-[4px] border-black transition-colors text-black">Achromatic V1 (Dark)</a>
+            <a href="index-achromatic-v2.html" class="px-4 py-3 font-heading text-xl uppercase hover:bg-zinc-200 border-b-[4px] border-black transition-colors text-black">Achromatic V2 (Light)</a>
+            <a href="index-crazy.html" class="px-4 py-3 font-heading text-xl uppercase bg-black text-white transition-colors flex justify-between items-center">
+                Chaos V3 (Exp)
+                <span class="w-2 h-2 rounded-full bg-white"></span>
+            </a>
+            <a href="index-retro.html" class="px-4 py-3 font-heading text-xl uppercase hover:bg-zinc-200 border-b-[4px] border-black transition-colors text-black">Retro OS V4</a>
+            <a href="index-minimal.html" class="px-4 py-3 font-heading text-xl uppercase hover:bg-zinc-200 border-b-[4px] border-black transition-colors text-black">Minimalist V5</a>
+        </div>
+        <button id="design-switcher-btn" class="px-6 py-4 bg-white text-black border-4 border-black font-heading tracking-wider uppercase text-2xl shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] flex items-center gap-3 active:translate-y-1 active:translate-x-1 active:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all">
+            Design Switcher
+            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="3" d="M4 6h16M4 12h16m-7 6h7" />
+            </svg>
+        </button>
+    </div>
+
+    <script>
+        // Custom Cursor Logic
+        const isDesktop = window.innerWidth >= 768;
+        const cursor = document.getElementById('cursor-invert');
+        if (isDesktop && cursor) {
+            document.addEventListener('mousemove', (e) => {
+                cursor.style.left = e.clientX + 'px';
+                cursor.style.top = e.clientY + 'px';
+            });
+        }
+
+        // Horizontal Scrolling Logic
+        const scrollContainer = document.getElementById('scroll-container');
+        let currentScroll = 0;
+        let targetScroll = 0;
+        const ease = 0.08;
+
+        // Total width of all panels minus viewport width
+        let maxScroll = 0;
+        
+        function updateMaxScroll() {
+            maxScroll = scrollContainer.scrollWidth - window.innerWidth;
+        }
+        window.addEventListener('resize', updateMaxScroll);
+        updateMaxScroll();
+
+        window.addEventListener('wheel', (e) => {
+            // Map vertical wheel scroll to horizontal
+            targetScroll += e.deltaY;
+            targetScroll += e.deltaX;
+            targetScroll = Math.max(0, Math.min(targetScroll, maxScroll));
+        });
+
+        // Touch support for mobile
+        let touchStartX = 0;
+        let touchStartY = 0;
+        
+        window.addEventListener('touchstart', (e) => {
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+        }, { passive: false });
+
+        window.addEventListener('touchmove', (e) => {
+            // Only prevent default if we're not dragging an element
+            if (e.target.closest('.draggable')) return;
+            e.preventDefault();
+            const touchX = e.touches[0].clientX;
+            const touchY = e.touches[0].clientY;
+            
+            const deltaX = touchStartX - touchX;
+            const deltaY = touchStartY - touchY;
+            
+            // Map touch swipe to horizontal scroll
+            targetScroll += deltaX + deltaY;
+            targetScroll = Math.max(0, Math.min(targetScroll, maxScroll));
+            
+            touchStartX = touchX;
+            touchStartY = touchY;
+        }, { passive: false });
+
+        function renderScroll() {
+            currentScroll += (targetScroll - currentScroll) * ease;
+            scrollContainer.style.transform = `translateX(-${currentScroll}px)`;
+            requestAnimationFrame(renderScroll);
+        }
+        renderScroll();
+
+        // Draggable Logic
+        const draggables = document.querySelectorAll('.draggable');
+        draggables.forEach(el => {
+            let isDragging = false;
+            let startX, startY, initialX, initialY;
+
+            el.addEventListener('mousedown', dragStart);
+            el.addEventListener('touchstart', dragStart, { passive: false });
+            
+            function dragStart(e) {
+                isDragging = true;
+                // Bring to front
+                draggables.forEach(d => d.style.zIndex = parseInt(window.getComputedStyle(d).zIndex) > 10 ? parseInt(window.getComputedStyle(d).zIndex) - 1 : 10);
+                el.style.zIndex = 100;
+                
+                initialX = el.offsetLeft;
+                initialY = el.offsetTop;
+                
+                if (e.type === 'touchstart') {
+                    startX = e.touches[0].clientX;
+                    startY = e.touches[0].clientY;
+                    document.addEventListener('touchmove', drag, { passive: false });
+                    document.addEventListener('touchend', dragEnd);
+                } else {
+                    startX = e.clientX;
+                    startY = e.clientY;
+                    document.addEventListener('mousemove', drag);
+                    document.addEventListener('mouseup', dragEnd);
+                }
+            }
+
+            function drag(e) {
+                if (!isDragging) return;
+                e.preventDefault();
+                
+                let currentX, currentY;
+                if (e.type === 'touchmove') {
+                    currentX = e.touches[0].clientX - startX;
+                    currentY = e.touches[0].clientY - startY;
+                } else {
+                    currentX = e.clientX - startX;
+                    currentY = e.clientY - startY;
+                }
+                
+                el.style.left = (initialX + currentX) + 'px';
+                el.style.top = (initialY + currentY) + 'px';
+            }
+
+            function dragEnd(e) {
+                isDragging = false;
+                if (e && e.type === 'touchend') {
+                    document.removeEventListener('touchmove', drag);
+                    document.removeEventListener('touchend', dragEnd);
+                } else {
+                    document.removeEventListener('mousemove', drag);
+                    document.removeEventListener('mouseup', dragEnd);
+                }
+            }
+        });
+
+        // Design Switcher Logic
+        const switcherBtn = document.getElementById('design-switcher-btn');
+        const switcherMenu = document.getElementById('design-switcher-menu');
+        if (switcherBtn && switcherMenu) {
+            switcherBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                switcherMenu.classList.toggle('hidden');
+                switcherMenu.classList.toggle('flex');
+            });
+            document.addEventListener('click', (e) => {
+                if (!switcherMenu.contains(e.target) && !switcherBtn.contains(e.target)) {
+                    switcherMenu.classList.add('hidden');
+                    switcherMenu.classList.remove('flex');
+                }
+            });
+        }
+    </script>
+</body>
+</html>
